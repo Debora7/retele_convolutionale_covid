@@ -1,0 +1,25 @@
+data:
+  images_dir: C:\Users\Debora\Desktop\AI\AI-intro\7. Retele Complet Convolutionale\Date radiografii pulmonare\imagini
+  right_masks_dir: C:\Users\Debora\Desktop\AI\AI-intro\7. Retele Complet Convolutionale\Date radiografii pulmonare\segmentari\plamanul drept
+  left_masks_dir: C:\Users\Debora\Desktop\AI\AI-intro\7. Retele Complet Convolutionale\Date radiografii pulmonare\segmentari\plamanul stang
+  data_csv: dataset_seg.csv
+
+  img_size: [128, 128]
+  split_per:
+    train: 0.7
+    valid: 0.2
+    test: 0.1
+
+train:
+  bs: 8
+  lr: 0.0001
+  opt: Adam  #SGD, RMSprop, Adam
+  epochs: 50
+
+test:
+  threshold: 0.5
+
+augmentare:
+  probabilitate: 80
+  rotatie: 180
+  factor: 2
