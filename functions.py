@@ -81,43 +81,6 @@ def create_dataset_csv(images_dir, right_masks_dir, left_masks_dir, csv_path):
     return dataset_df
 
 
-def split_dataset(dataset_df, split_per, seed=1):
-    """Impartirea setului de date in antrenare, validare si testare in mod aleatoriu
-
-    Args:
-        dataset_df (pandas.DataFrame): contine caile catre imaginile de input si mastile de segmentare
-        split_per (dict): un dictionare de forma {"train": float, "valid": float, "test": float} ce descrie
-            procentajele pentru fiecare subset
-        seed (int, optional): valoarea seed pentru reproducerea impartirii setului de date. Defaults to 1.
-    """
-    # se amesteca aleatoriu indecsii DataFrame-ului
-    # indexul este un numar (de cele mai multe ori) asociat fiecarui rand
-    indices = dataset_df.index.to_numpy()
-    total = len(indices)
-    random.seed(seed)
-    random.shuffle(indices)
-
-    # se impart indecsii in functie de procentele primite ca input
-    train_idx = int(total * split_per["train"])
-    valid_idx = train_idx + int(total * split_per["valid"])
-    test_idx = train_idx + valid_idx + int(total * split_per["test"])
-
-    train_indices = indices[:train_idx]
-    valid_indices = indices[train_idx:valid_idx]
-    test_indices = indices[valid_idx:test_idx]
-
-    #     print(len(train_indices), len(valid_indices), len(test_indices))
-
-    # se adauga o noua coloana la DataFrame care specifica in ce subset
-    # face parte o imagine si mastile de segmentare asociate
-    dataset_df['subset'] = ""
-    dataset_df.loc[train_indices, "subset"] = "train"
-    dataset_df.loc[valid_indices, "subset"] = "valid"
-    dataset_df.loc[test_indices, "subset"] = "test"
-
-    return dataset_df
-
-
 # Afisarea curbelor de invatare
 def plot_acc_loss(result):
     acc = result.history['accuracy']
