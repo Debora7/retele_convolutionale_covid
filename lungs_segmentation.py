@@ -10,8 +10,8 @@ from tensorflow import keras
 from tensorflow.keras.preprocessing.image import load_img
 from UNetModel import UNetModel
 from PIL import Image, ImageEnhance
-from functinos import *
-from clasess import *
+from functions import *
+from LungSegDataGenerator import *
 
 config = None
 with open('config.yaml') as f:  # reads .yml/.yaml files
