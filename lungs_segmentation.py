@@ -5,17 +5,21 @@ import pathlib as pt
 import random
 import tensorflow as tf
 import yaml
+import os
 
 from tensorflow import keras
-from tensorflow.keras.preprocessing.image import load_img
+from tensorflow.keras.preprocessing.image import load_img, ImageDataGenerator
 from UNetModel import UNetModel
 from PIL import Image, ImageEnhance
 from functions import *
 from LungSegDataGenerator import *
+from datetime import datetime
 
 config = None
 with open('config.yaml') as f:  # reads .yml/.yaml files
     config = yaml.safe_load(f)
+
+local_date = datetime.now()
 
 dataset_df = create_dataset_csv(config["data"]["images_dir"],
                                 config["data"]["right_masks_dir"],
@@ -65,12 +69,14 @@ valid_gen = LungSegDataGenerator(valid_df,
 unet_model.compile(loss="binary_crossentropy",
                    optimizer=tf.keras.optimizers.Adam(learning_rate=config['train']['lr']),
                    metrics=["accuracy"])
-callbacks = [keras.callbacks.ModelCheckpoint('segmentare.h5', save_best_only=True)]
+callbacks = [keras.callbacks.ModelCheckpoint('segmentare.h5', save_best_only=True),
+             keras.callbacks.CSVLogger(f'file.csv{local_date}', separator=',', append=False)]
 history = unet_model.fit(train_gen,
                          validation_data=valid_gen,
                          epochs=config['train']['epochs'],
                          callbacks=callbacks,
                          workers=1)
+unet_model.save('my_model')
 
 plot_acc_loss(history)
 
@@ -105,3 +111,11 @@ for i, (img, gt, pred) in enumerate(zip(x[:nr_exs], y[:nr_exs], y_pred[:nr_exs])
     axs[i][2].axis('off')
     axs[i][2].set_title('Prediction')
     axs[i][2].imshow(pred, cmap='gray')
+
+    index = coef(gt, pred)
+    print(coef)
+    axs[i][3].axis('off')
+    axs[i][3].set_title('Dice Index')
+    axs[i][3].imshow(coef,cmap='gray')
+
+plt.show()
