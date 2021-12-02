@@ -7,6 +7,7 @@ import tensorflow as tf
 import yaml
 
 
+# Functie pentru impartirea setului de date
 def split_dataset(dataset_df, split_per, seed=1):
     """Impartirea setului de date in antrenare, validare si testare in mod aleatoriu
 
@@ -108,3 +109,11 @@ def plot_acc_loss(result):
     plt.xlabel('Epoch')
 
     plt.show()
+
+
+# Functie - confusion matrix
+def coef(y_adev, y_prezis):
+    y_adev_1 = tf.reshape(tf.dtypes.cast(y_adev, tf.float32), [-1])
+    y_prezis_1 = tf.reshape(tf.dtypes.cast(y_prezis, tf.float32), [-1])
+    intersectie = tf.reduce_sum(y_adev_1 * y_prezis_1)
+    return  (2. * intersectie + 1.) / (tf.reduce_sum(y_adev_1) + tf.reduce_sum(y_prezis_1) + 1.)
